@@ -1,6 +1,6 @@
 <?php
 
-use Kreait\Firebase\Factory; 
+use Kreait\Firebase\Factory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuarioController;
 use App\Http\Controllers\Api\VeterinarioController;
@@ -13,10 +13,23 @@ use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\ExamenController;
 use App\Http\Controllers\Api\MedicamentoController;
 use App\Http\Controllers\Api\NotificacionController;
+use App\Http\Controllers\Api\AuthController;
 
 
 
 Route::prefix('v1')->group(function () {
+
+    // AUTENTICACIÓN
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::prefix('usuarios')->group(function () {
+        Route::get('/', [UsuarioController::class, 'index']);
+        Route::get('/{id}', [UsuarioController::class, 'show']);
+        Route::post('/', [UsuarioController::class, 'store']);
+        Route::put('/{id}', [UsuarioController::class, 'update']);
+        Route::delete('/{id}', [UsuarioController::class, 'destroy']);
+    });
 
     //  USUARIOS
     Route::prefix('usuarios')->group(function () {
