@@ -17,7 +17,7 @@ class Paciente
             'nombre_mascota' => 'required|string|max:255',
             'raza' => 'required|string|max:100',
             'sexo' => 'required|in:Macho,Hembra',
-            'dueno_id' => 'required|string',
+            'cliente_id' => 'required|string',
         ]);
     }
 }

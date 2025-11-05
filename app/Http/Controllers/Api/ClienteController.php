@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 
-// use App\Models\Dueno;
+// use App\Models\Cliente;
 // use Illuminate\Support\Facades\Hash;
 
-class DuenoController extends Controller
+class ClienteController extends Controller
 {
     protected $database;
 
@@ -26,11 +26,11 @@ class DuenoController extends Controller
     public function index()
     {
         try {
-            $duenos = $this->database->getReference('duenos')->getValue() ?? [];
+            $cliente = $this->database->getReference('clientes')->getValue() ?? [];
 
             $data = [];
-            foreach ($duenos as $id => $dueno) {
-                $data[] = array_merge(['id' => $id], $dueno);
+            foreach ($clientes as $id => $cliente) {
+                $data[] = array_merge(['id' => $id], $cliente);
             }
 
             return response()->json(['success' => true, 'data' => $data]);
@@ -45,12 +45,12 @@ class DuenoController extends Controller
             $data = $request->all();
             $data['created_at'] = now()->toIso8601String();
 
-            $newDueno = $this->database->getReference('duenos')->push($data);
+            $newCliente = $this->database->getReference('clientes')->push($data);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Dueño creado exitosamente',
-                'id' => $newDueno->getKey(),
+                'id' => $newCliente->getKey(),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
@@ -60,13 +60,13 @@ class DuenoController extends Controller
     public function show($id)
     {
         try {
-            $dueno = $this->database->getReference("duenos/{$id}")->getValue();
+            $cliente = $this->database->getReference("clientes/{$id}")->getValue();
 
-            if (!$dueno) {
+            if (!$cliente) {
                 return response()->json(['success' => false, 'message' => 'Dueño no encontrado'], 404);
             }
 
-            return response()->json(['success' => true, 'data' => array_merge(['id' => $id], $dueno)]);
+            return response()->json(['success' => true, 'data' => array_merge(['id' => $id], $cliente)]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
@@ -75,7 +75,7 @@ class DuenoController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $ref = $this->database->getReference("duenos/{$id}");
+            $ref = $this->database->getReference("clientes/{$id}");
 
             if (!$ref->getValue()) {
                 return response()->json(['success' => false, 'message' => 'Dueño no encontrado'], 404);
@@ -95,7 +95,7 @@ class DuenoController extends Controller
     public function destroy($id)
     {
         try {
-            $ref = $this->database->getReference("duenos/{$id}");
+            $ref = $this->database->getReference("clientes/{$id}");
 
             if (!$ref->getValue()) {
                 return response()->json(['success' => false, 'message' => 'Dueño no encontrado'], 404);

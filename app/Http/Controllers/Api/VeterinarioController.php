@@ -14,6 +14,8 @@ class VeterinarioController extends Controller
 {
      protected $database;
 
+
+
     public function __construct()
     {
         $factory = (new Factory)
@@ -28,21 +30,31 @@ class VeterinarioController extends Controller
     public function index()
     {
         try {
-            $snapshot = $this->database->getReference('veterinarios')->getSnapshot();
-            $veterinarios = $snapshot->getValue();
+            $snapshot = $this->database->getReference('usuarios')->getSnapshot();
+            $usuarios = $snapshot->getValue();
 
-            if (!$veterinarios) {
+            if (!$usuarios) {
                 return response()->json(['success' => true, 'data' => []]);
             }
 
-            $data = [];
-            foreach ($veterinarios as $id => $veterinario) {
-                $data[] = array_merge(['id' => $id], $veterinario);
+            $veterinarios = [];
+            foreach ($usuarios as $id => $usuario) {
+                if (
+                    isset($usuario['rol']) &&
+                    $usuario['rol'] === 'veterinario' &&
+                    (!isset($usuario['estado']) || $usuario['estado'] === 'activo')
+                ) {
+                    unset($usuario['password']); // seguridad
+                    $veterinarios[] = array_merge(['id' => $id], $usuario);
+                }
             }
 
-            return response()->json(['success' => true, 'data' => $data]);
+            return response()->json(['success' => true, 'data' => $veterinarios]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -144,4 +156,5 @@ class VeterinarioController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
 }

@@ -27,32 +27,39 @@ class PacienteController extends Controller
      /**
      * Muestra todos los pacientes de un dueño específico
      */
-    public function index($duenoId)
-    {
+    public function index($clienteId){
         try {
-            $reference = $this->database->getReference("duenos/{$duenoId}/pacientes");
+            $reference = $this->database->getReference("clientes/{$clienteId}/pacientes");
             $pacientes = $reference->getValue();
 
-            return response()->json([
-                'success' => true,
-                'data' => $pacientes ?? []
-            ]);
+            if (!$pacientes) {
+                return response()->json([]); // Retornar arreglo vacío si no hay pacientes
+            }
+
+            // Convertir de objeto Firebase a array con id incluido
+            $resultado = [];
+            foreach ($pacientes as $id => $paciente) {
+                $resultado[] = array_merge(['id' => $id], $paciente);
+            }
+
+            return response()->json($resultado);
         } catch (DatabaseException $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Crea un nuevo paciente para un dueño
      */
-    public function store(Request $request, $duenoId)
+    public function store(Request $request, $clienteId)
     {
         try {
             $data = $request->all();
             $data['created_at'] = now()->toIso8601String();
 
             $newPaciente = $this->database
-                ->getReference("duenos/{$duenoId}/pacientes")
+                ->getReference("clientes/{$clienteId}/pacientes")
                 ->push($data);
 
             return response()->json([
@@ -68,11 +75,11 @@ class PacienteController extends Controller
     /**
      * Muestra un paciente específico de un dueño
      */
-    public function show($duenoId, $pacienteId)
+    public function show($clienteId, $pacienteId)
     {
         try {
             $snapshot = $this->database
-                ->getReference("duenos/{$duenoId}/pacientes/{$pacienteId}")
+                ->getReference("clientes/{$clienteId}/pacientes/{$pacienteId}")
                 ->getValue();
 
             if (!$snapshot) {
@@ -88,10 +95,10 @@ class PacienteController extends Controller
     /**
      * Actualiza los datos de un paciente
      */
-    public function update(Request $request, $duenoId, $pacienteId)
+    public function update(Request $request, $clienteId, $pacienteId)
     {
         try {
-            $reference = $this->database->getReference("duenos/{$duenoId}/pacientes/{$pacienteId}");
+            $reference = $this->database->getReference("clientes/{$clienteId}/pacientes/{$pacienteId}");
 
             if (!$reference->getValue()) {
                 return response()->json(['success' => false, 'message' => 'Paciente no encontrado'], 404);
@@ -109,10 +116,10 @@ class PacienteController extends Controller
     }
 
     /*Elimina un paciente de un dueño*/
-    public function destroy($duenoId, $pacienteId)
+    public function destroy($clienteId, $pacienteId)
     {
         try {
-            $reference = $this->database->getReference("duenos/{$duenoId}/pacientes/{$pacienteId}");
+            $reference = $this->database->getReference("clientes/{$clienteId}/pacientes/{$pacienteId}");
 
             if (!$reference->getValue()) {
                 return response()->json(['success' => false, 'message' => 'Paciente no encontrado'], 404);

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuarioController;
 use App\Http\Controllers\Api\VeterinarioController;
 use App\Http\Controllers\Api\RecepcionistaController;
-use App\Http\Controllers\Api\DuenoController;
+use App\Http\Controllers\Api\ClienteController;
 use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\HistorialController;
 use App\Http\Controllers\Api\CitaController;
@@ -38,7 +38,18 @@ Route::prefix('v1')->group(function () {
         Route::post('/', [UsuarioController::class, 'store']);// POST /api/v1/usuarios
         Route::put('/{id}', [UsuarioController::class, 'update']);// PUT /api/v1/usuarios/{id}
         Route::delete('/{id}', [UsuarioController::class, 'destroy']);// DELETE /api/v1/usuarios/{id}
+
+        // veterinarios activos
+        Route::get('/usuarios/activos/veterinarios', [UsuarioController::class, 'veterinariosActivos']);
     });
+
+
+    //  cliente
+    Route::get('/v1/cliente', [UsuarioController::class, 'cliente']);
+
+    //  veterinarios activos
+
+
 
     // VETERINARIOS
     Route::prefix('veterinarios')->group(function () {
@@ -57,28 +68,28 @@ Route::prefix('v1')->group(function () {
         Route::delete('/{id}', [RecepcionistaController::class, 'destroy']);// DELETE /api/v1/recepcionistas/{id}
     });
 
-    // DUEÑOS
-    Route::prefix('duenos')->group(function () {
-        Route::get('/', [DuenoController::class, 'index']);// GET /api/v1/duenos
-        Route::get('/{id}', [DuenoController::class, 'show']);// GET /api/v1/duenos/{id}
-        Route::post('/', [DuenoController::class, 'store']);// POST /api/v1/duenos
-        Route::put('/{id}', [DuenoController::class, 'update']);// PUT /api/v1/duenos/{id}
-        Route::delete('/{id}', [DuenoController::class, 'destroy']);// DELETE /api/v1/duenos/{id}
+    // CLIENTE
+    Route::prefix('clientes')->group(function () {
+        Route::get('/', [ClienteController::class, 'index']);// GET /api/v1/clientes
+        Route::get('/{id}', [ClienteController::class, 'show']);// GET /api/v1/clientes/{id}
+        Route::post('/', [ClienteController::class, 'store']);// POST /api/v1/clientes
+        Route::put('/{id}', [ClienteController::class, 'update']);// PUT /api/v1/clientes/{id}
+        Route::delete('/{id}', [ClienteController::class, 'destroy']);// DELETE /api/v1/clientes/{id}
 
         //  PACIENTES (Subcolección de Dueños)
-        Route::prefix('{duenoId}/pacientes')->group(function () {
-            Route::get('/', [PacienteController::class, 'index']);// GET /api/v1/duenos/{duenoId}/pacientes
-            Route::get('/{pacienteId}', [PacienteController::class, 'show']);// GET /api/v1/duenos/{duenoId}/pacientes/{pacienteId}
-            Route::post('/', [PacienteController::class, 'store']);// POST /api/v1/duenos/{duenoId}/pacientes
-            Route::put('/{pacienteId}', [PacienteController::class, 'update']);// PUT /api/v1/duenos/{duenoId}/pacientes/{pacienteId}
-            Route::delete('/{pacienteId}', [PacienteController::class, 'destroy']);// DELETE /api/v1/duenos/{duenoId}/pacientes/{pacienteId}
+        Route::prefix('{clienteId}/pacientes')->group(function () {
+            Route::get('/', [PacienteController::class, 'index']);// GET /api/v1/clientes/{clienteId}/pacientes
+            Route::get('/{pacienteId}', [PacienteController::class, 'show']);// GET /api/v1/clientes/{clienteId}/pacientes/{pacienteId}
+            Route::post('/', [PacienteController::class, 'store']);// POST /api/v1/clientes/{clienteId}/pacientes
+            Route::put('/{pacienteId}', [PacienteController::class, 'update']);// PUT /api/v1/clientes/{clienteId}/pacientes/{pacienteId}
+            Route::delete('/{pacienteId}', [PacienteController::class, 'destroy']);// DELETE /api/v1/clientes/{clienteId}/pacientes/{pacienteId}
 
             //  HISTORIAL (Subcolección de Pacientes)
             Route::prefix('{pacienteId}/historiales')->group(function () {
-                Route::get('/', [HistorialController::class, 'index']);// GET /api/v1/duenos/{duenoId}/pacientes/{pacienteId}/historiales
-                Route::get('/{historialId}', [HistorialController::class, 'show']);// GET /api/v1/duenos/{duenoId}/pacientes/{pacienteId}/historiales/{historialId}
-                Route::post('/', [HistorialController::class, 'store']);// POST /api/v1/duenos/{duenoId}/pacientes/{pacienteId}/historiales
-                Route::delete('/{historialId}', [HistorialController::class, 'destroy']);// DELETE /api/v1/duenos/{duenoId}/pacientes/{pacienteId}/historiales/{historialId}
+                Route::get('/', [HistorialController::class, 'index']);// GET /api/v1/clientes/{clienteId}/pacientes/{pacienteId}/historiales
+                Route::get('/{historialId}', [HistorialController::class, 'show']);// GET /api/v1/clientes/{clienteId}/pacientes/{pacienteId}/historiales/{historialId}
+                Route::post('/', [HistorialController::class, 'store']);// POST /api/v1/clientes/{clienteId}/pacientes/{pacienteId}/historiales
+                Route::delete('/{historialId}', [HistorialController::class, 'destroy']);// DELETE /api/v1/clientes/{clienteId}/pacientes/{pacienteId}/historiales/{historialId}
             });
         });
     });
@@ -128,4 +139,5 @@ Route::prefix('v1')->group(function () {
         Route::get('/usuario/{usuarioId}', [NotificacionController::class, 'getByUsuario']);// GET /api/v1/notificaciones/usuario/{usuarioId}
         Route::delete('/{id}', [NotificacionController::class, 'destroy']);// DELETE /api/v1/notificaciones/{id}
     });
+
 });

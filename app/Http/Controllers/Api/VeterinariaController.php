@@ -9,7 +9,7 @@ use Kreait\Firebase\Contract\Firestore;
 use App\Models\Usuario;
 use App\Models\Veterinario;
 use App\Models\Recepcionista;
-use App\Models\Dueno;
+use App\Models\Cliente;
 use App\Models\Paciente;
 use App\Models\Historial;
 use App\Models\Cita;

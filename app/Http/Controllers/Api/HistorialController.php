@@ -20,11 +20,11 @@ class HistorialController extends Controller
         $this->database = $factory->createDatabase();
     }
 
-    public function index($duenoId, $pacienteId)
+    public function index($clienteId, $pacienteId)
     {
         try {
             $historiales = $this->database
-                ->getReference("duenos/$duenoId/pacientes/$pacienteId/historiales")
+                ->getReference("clientes/$clienteId/pacientes/$pacienteId/historiales")
                 ->getValue();
 
             return response()->json([
@@ -39,7 +39,7 @@ class HistorialController extends Controller
         }
     }
 
-    public function store(Request $request, $duenoId, $pacienteId)
+    public function store(Request $request, $clienteId, $pacienteId)
     {
         try {
             $data = $request->all();
@@ -47,7 +47,7 @@ class HistorialController extends Controller
             $data['created_at'] = now()->toIso8601String();
 
             $ref = $this->database
-                ->getReference("duenos/$duenoId/pacientes/$pacienteId/historiales")
+                ->getReference("clientes/$clienteId/pacientes/$pacienteId/historiales")
                 ->push($data);
 
             return response()->json([
@@ -63,11 +63,11 @@ class HistorialController extends Controller
         }
     }
 
-    public function show($duenoId, $pacienteId, $historialId)
+    public function show($clienteId, $pacienteId, $historialId)
     {
         try {
             $historial = $this->database
-                ->getReference("duenos/$duenoId/pacientes/$pacienteId/historiales/$historialId")
+                ->getReference("clientes/$clienteId/pacientes/$pacienteId/historiales/$historialId")
                 ->getValue();
 
             if (!$historial) {
@@ -89,11 +89,11 @@ class HistorialController extends Controller
         }
     }
 
-    public function destroy($duenoId, $pacienteId, $historialId)
+    public function destroy($clienteId, $pacienteId, $historialId)
     {
         try {
             $this->database
-                ->getReference("duenos/$duenoId/pacientes/$pacienteId/historiales/$historialId")
+                ->getReference("clientes/$clienteId/pacientes/$pacienteId/historiales/$historialId")
                 ->remove();
 
             return response()->json([

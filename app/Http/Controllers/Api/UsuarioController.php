@@ -186,4 +186,70 @@ class UsuarioController extends Controller
             ], 500);
         }
     }
+
+    /* Obtener solo los usuarios con rol "cliente" */
+public function clientes()
+{
+    try {
+        $snapshot = $this->database->getReference('usuarios')->getSnapshot();
+        $usuarios = $snapshot->getValue();
+
+        if (!$usuarios) {
+            return response()->json([
+                'success' => true,
+                'data' => []
+            ]);
+        }
+
+        $clientes = [];
+
+        foreach ($usuarios as $id => $usuario) {
+            if (isset($usuario['rol']) && strtolower($usuario['rol']) === 'cliente') {
+                $clientes[] = array_merge(['id' => $id], $usuario);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $clientes
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener clientes',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
+public function veterinariosActivos()
+{
+    try {
+        // Asumiendo que el modelo Usuario tiene los campos 'rol' y 'estado'
+        $veterinarios = \App\Models\Usuario::where('rol', 'Veterinario')
+            ->where('estado', 'Activo')
+            ->get();
+
+        if ($veterinarios->isEmpty()) {
+            return response()->json([
+                'message' => 'No hay veterinarios activos actualmente.'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Veterinarios activos obtenidos correctamente.',
+            'data' => $veterinarios
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error al obtener los veterinarios activos.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
+
 }

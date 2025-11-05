@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
 
-class Dueno
+class Cliente
 {
     public static function validate(array $data)
     {
