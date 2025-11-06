@@ -76,6 +76,9 @@ Route::prefix('v1')->group(function () {
         Route::put('/{id}', [ClienteController::class, 'update']);// PUT /api/v1/clientes/{id}
         Route::delete('/{id}', [ClienteController::class, 'destroy']);// DELETE /api/v1/clientes/{id}
 
+        // Buscar cliente por usuario_id
+        Route::get('/usuario/{usuarioId}', [ClienteController::class, 'getByUsuarioId']);
+
         //  PACIENTES (Subcolección de Dueños)
         Route::prefix('{clienteId}/pacientes')->group(function () {
             Route::get('/', [PacienteController::class, 'index']);// GET /api/v1/clientes/{clienteId}/pacientes
@@ -93,7 +96,6 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
-
     //  CITAS
     Route::prefix('citas')->group(function () {
         Route::get('/', [CitaController::class, 'index']);// GET /api/v1/citas
