@@ -22,14 +22,7 @@ Route::prefix('v1')->group(function () {
     // AUTENTICACIÓN
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
-
-    Route::prefix('usuarios')->group(function () {
-        Route::get('/', [UsuarioController::class, 'index']);
-        Route::get('/{id}', [UsuarioController::class, 'show']);
-        Route::post('/', [UsuarioController::class, 'store']);
-        Route::put('/{id}', [UsuarioController::class, 'update']);
-        Route::delete('/{id}', [UsuarioController::class, 'destroy']);
-    });
+    Route::post('registro', [AuthController::class, 'registro']);
 
     //  USUARIOS
     Route::prefix('usuarios')->group(function () {
@@ -43,13 +36,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/usuarios/activos/veterinarios', [UsuarioController::class, 'veterinariosActivos']);
     });
 
-
     //  cliente
     Route::get('/v1/cliente', [UsuarioController::class, 'cliente']);
-
-    //  veterinarios activos
-
-
 
     // VETERINARIOS
     Route::prefix('veterinarios')->group(function () {
@@ -96,6 +84,7 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
+
     //  CITAS
     Route::prefix('citas')->group(function () {
         Route::get('/', [CitaController::class, 'index']);// GET /api/v1/citas
@@ -103,6 +92,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/', [CitaController::class, 'store']);// POST /api/v1/citas
         Route::put('/{id}', [CitaController::class, 'update']);// PUT /api/v1/citas/{id}
         Route::delete('/{id}', [CitaController::class, 'destroy']);// DELETE /api/v1/citas/{id}
+
+         //Endpoint: Obtener horarios disponibles
+        Route::get('/horarios/disponibles', [CitaController::class, 'horariosDisponibles']);
 
         //  CONSULTAS (Subcolección de Citas)
         Route::prefix('{citaId}/consultas')->group(function () {
