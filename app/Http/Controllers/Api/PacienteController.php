@@ -47,7 +47,7 @@ class PacienteController extends Controller
                 $pacientes[] = array_merge(['id' => $key], $value);
             }
 
-            Log::info('✅ Total pacientes encontrados: ' . count($pacientes));
+            Log::info('Total pacientes encontrados: ' . count($pacientes));
 
             return response()->json([
                 'success' => true,
@@ -55,7 +55,7 @@ class PacienteController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-            Log::error('❌ Error al listar pacientes: ' . $e->getMessage());
+            Log::error('Error al listar pacientes: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -91,7 +91,7 @@ class PacienteController extends Controller
 
             $pacienteId = $newPaciente->getKey();
 
-            Log::info('✅ Paciente creado con ID: ' . $pacienteId);
+            Log::info('Paciente creado con ID: ' . $pacienteId);
 
             return response()->json([
                 'success' => true,
@@ -106,7 +106,7 @@ class PacienteController extends Controller
                 'message' => 'Datos inválidos'
             ], 422);
         } catch (DatabaseException $e) {
-            Log::error('❌ Error al crear paciente: ' . $e->getMessage());
+            Log::error('Error al crear paciente: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al crear el paciente'
@@ -175,7 +175,7 @@ class PacienteController extends Controller
 
             $reference->update($data);
 
-            Log::info('✅ Paciente actualizado correctamente');
+            Log::info('Paciente actualizado correctamente');
 
             return response()->json([
                 'success' => true,
@@ -190,7 +190,7 @@ class PacienteController extends Controller
                 'message' => 'Datos inválidos'
             ], 422);
         } catch (DatabaseException $e) {
-            Log::error('❌ Error al actualizar paciente: ' . $e->getMessage());
+            Log::error('Error al actualizar paciente: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al actualizar el paciente'
@@ -217,7 +217,7 @@ class PacienteController extends Controller
 
             $reference->remove();
 
-            Log::info('✅ Paciente eliminado correctamente');
+            Log::info('Paciente eliminado correctamente');
 
             return response()->json([
                 'success' => true,
@@ -225,7 +225,7 @@ class PacienteController extends Controller
             ], 200);
 
         } catch (DatabaseException $e) {
-            Log::error('❌ Error al eliminar paciente: ' . $e->getMessage());
+            Log::error('Error al eliminar paciente: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al eliminar el paciente'
