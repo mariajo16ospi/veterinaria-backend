@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ExamenController;
 use App\Http\Controllers\Api\MedicamentoController;
 use App\Http\Controllers\Api\NotificacionController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PagoController;
 
 
 
@@ -133,5 +134,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/usuario/{usuarioId}', [NotificacionController::class, 'getByUsuario']);// GET /api/v1/notificaciones/usuario/{usuarioId}
         Route::delete('/{id}', [NotificacionController::class, 'destroy']);// DELETE /api/v1/notificaciones/{id}
     });
+
+    Route::prefix('pagos')->group(function () {
+        Route::get('/test', [PagoController::class, 'test']);
+        Route::get('/public-key', [PagoController::class, 'getPublicKey']);
+        Route::post('/crear-preferencia', [PagoController::class, 'crearPreferencia']);
+        Route::post('/webhook', [PagoController::class, 'webhook']);
+        Route::get('/verificar/{paymentId}', [PagoController::class, 'verificarEstado']);
+    });
+
 
 });
