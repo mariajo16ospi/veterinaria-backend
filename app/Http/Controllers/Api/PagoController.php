@@ -238,8 +238,15 @@ class PagoController extends Controller
                 ]
             ],
             "external_reference" => $validated['cita_id'],
-            "notification_url" => "https://onita-unrallied-erin.ngrok-free.dev/api/v1/pagos/webhook"
+            "notification_url" => "https://onita-unrallied-erin.ngrok-free.dev/api/v1/pagos/webhook",
+            "back_urls" => [
+                "success" => "https://onita-unrallied-erin.ngrok-free.dev/cliente/citas/pago/success",
+                "failure" => "https://onita-unrallied-erin.ngrok-free.dev/cliente/citas/pago/failure",
+                "pending" => "https://onita-unrallied-erin.ngrok-free.dev/cliente/citas/pago/pending"
+            ],
+            "auto_return" => "approved",
         ]);
+
 
         Log::info(' Preferencia creada correctamente');
         Log::info(" ID: {$preference->id}");
@@ -358,39 +365,45 @@ class PagoController extends Controller
     /**
      * Verificar estado de un pago
      */
-    public function verificarEstado($paymentId)
+    public function verificar($paymentId)
     {
         try {
-            Log::info(' Verificando estado de pago: ' . $paymentId);
+            \Log::info("Verificando pago con ID: $paymentId");
 
-            $client = new \MercadoPago\Client\Payment\PaymentClient();
-            $payment = $client->get($paymentId);
+            $client = new \MercadoPago\SDK();
+            $client->setAccessToken(config('services.mercadopago.access_token'));
 
-            Log::info(' Estado obtenido correctamente');
+            // Obtener el pago real
+            $payment = $client->payment()->get($paymentId);
 
+            if (!$payment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pago no encontrado'
+                ], 404);
+            }
+
+            \Log::info("Pago obtenido:", (array) $payment);
+
+            // Respuesta a Angular
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'payment_id' => $paymentId,
+                    'id' => $payment->id,
                     'status' => $payment->status,
                     'status_detail' => $payment->status_detail,
-                    'transaction_amount' => $payment->transaction_amount,
-                    'date_approved' => $payment->date_approved,
-                    'payment_method_id' => $payment->payment_method_id,
+                    'amount' => $payment->transaction_amount,
                 ]
             ]);
 
-        } catch (Exception $e) {
-            Log::error(' Error al verificar pago:', [
-                'payment_id' => $paymentId,
-                'error' => $e->getMessage()
-            ]);
+        } catch (\Exception $e) {
+            \Log::error("Error verificando pago: " . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener información del pago',
-                'error' => $e->getMessage()
+                'message' => 'Error al verificar el pago'
             ], 500);
         }
     }
+
 }
