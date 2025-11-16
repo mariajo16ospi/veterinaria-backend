@@ -27,12 +27,12 @@ class PacienteController extends Controller
     public function index($clienteId)
     {
         try {
-            Log::info('📋 Listando pacientes para cliente: ' . $clienteId);
+            Log::info('Listando pacientes para cliente: ' . $clienteId);
 
             $reference = $this->database->getReference('clientes/' . $clienteId . '/pacientes');
             $snapshot = $reference->getValue();
 
-            Log::info('📦 Snapshot obtenido:', ['data' => $snapshot ? 'con datos' : 'vacío']);
+            Log::info('Snapshot obtenido:', ['data' => $snapshot ? 'con datos' : 'vacío']);
 
             if (!$snapshot) {
                 return response()->json([
@@ -70,16 +70,17 @@ class PacienteController extends Controller
     public function store(Request $request, $clienteId)
     {
         try {
-            Log::info('➕ Creando paciente para cliente: ' . $clienteId);
-            Log::info('📝 Datos recibidos:', $request->all());
+            Log::info('Creando paciente para cliente: ' . $clienteId);
+            Log::info('Datos recibidos:', $request->except(['imagen_url'])); // No loguear base64
 
             $data = $request->validate([
                 'nombre_mascota' => 'required|string',
                 'especie' => 'required|string',
-                'raza' => 'nullable|string',
-                'color' => 'nullable|string',
+                'raza' => 'required|string',
+                'color' => 'required|string',
                 'sexo' => 'required|string',
                 'fecha_nacimiento' => 'required|string',
+                'imagen_url' => 'nullable|string', // Acepta Base64
             ]);
 
             $data['cliente_id'] = $clienteId;
@@ -150,7 +151,7 @@ class PacienteController extends Controller
     public function update(Request $request, $clienteId, $pacienteId)
     {
         try {
-            Log::info('✏️ Actualizando paciente: ' . $pacienteId . ' del cliente: ' . $clienteId);
+            Log::info('Actualizando paciente: ' . $pacienteId . ' del cliente: ' . $clienteId);
 
             $reference = $this->database->getReference("clientes/{$clienteId}/pacientes/{$pacienteId}");
 
@@ -164,10 +165,11 @@ class PacienteController extends Controller
             $data = $request->validate([
                 'nombre_mascota' => 'required|string',
                 'especie' => 'required|string',
-                'raza' => 'nullable|string',
-                'color' => 'nullable|string',
+                'raza' => 'required|string',
+                'color' => 'required|string',
                 'sexo' => 'required|string',
                 'fecha_nacimiento' => 'required|string',
+                'imagen_url' => 'nullable|string',
             ]);
 
             $data['cliente_id'] = $clienteId;
@@ -204,7 +206,7 @@ class PacienteController extends Controller
     public function destroy($clienteId, $pacienteId)
     {
         try {
-            Log::info('🗑️ Eliminando paciente: ' . $pacienteId . ' del cliente: ' . $clienteId);
+            Log::info('Eliminando paciente: ' . $pacienteId . ' del cliente: ' . $clienteId);
 
             $reference = $this->database->getReference("clientes/{$clienteId}/pacientes/{$pacienteId}");
 

@@ -142,6 +142,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/webhook', [PagoController::class, 'webhook']);
         Route::get('/verificar/{paymentId}', [PagoController::class, 'verificarEstado']);
     });
-
+    
+    Route::post('/citas/enviar-recordatorios', [CitaController::class, 'enviarRecordatorios']);
+    Route::get('/citas/verificar-recordatorios', [CitaController::class, 'obtenerCitasParaRecordatorio']);
 
 });
